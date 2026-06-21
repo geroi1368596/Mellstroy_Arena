@@ -18,11 +18,28 @@ public class LaserBeam2D : MonoBehaviour
     void Awake()
     {
         lr = GetComponent<LineRenderer>();
+        if (lr == null) lr = gameObject.AddComponent<LineRenderer>();
         lr.positionCount = 2;
+        lr.material = lr.material ?? new Material(Shader.Find("Sprites/Default"));
+        // default to rendering above default sprites
+        lr.sortingLayerName = "Default";
+        lr.sortingOrder = 100;
     }
 
     void Start()
     {
+        // If layers weren't assigned in inspector, try reasonable defaults.
+        if (wallLayer == 0)
+        {
+            wallLayer = LayerMask.GetMask("Wall");
+            if (wallLayer == 0) wallLayer = ~0; // fallback to everything
+        }
+        if (boxerLayer == 0)
+        {
+            boxerLayer = LayerMask.GetMask("Characters");
+            if (boxerLayer == 0) boxerLayer = ~0;
+        }
+
         if (firePoint != null) transform.position = firePoint.position;
         StartCoroutine(RunBeam());
     }
