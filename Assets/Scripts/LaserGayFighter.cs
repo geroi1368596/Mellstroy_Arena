@@ -8,7 +8,7 @@ public class LaserGayFighter : Fighter
     public float laserCooldown = 2f;
     private float lastLaserTime = -1f;
 
-    protected override void OnEnemyContact(Collision2D collision)
+    protected override void OnEnemyContact(UnityEngine.Collision2D collision)
     {
         // LaserGay does not attack on contact; behavior is handled by laser
     }
@@ -30,7 +30,7 @@ public class LaserGayFighter : Fighter
         }
     }
 
-    public override void Die()
+    protected override void Die()
     {
         CancelInvoke();
         base.Die();

@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class FightingGameManager : MonoBehaviour
 {
@@ -11,8 +10,8 @@ public class FightingGameManager : MonoBehaviour
     [Header("UI")]
     public Image healthBar1;
     public Image healthBar2;
-    public TextMeshProUGUI hpText1;
-    public TextMeshProUGUI hpText2;
+    public Text hpText1;
+    public Text hpText2;
 
     void Update()
     {

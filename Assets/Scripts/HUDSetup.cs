@@ -1,10 +1,10 @@
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI;
 
 public class HUDSetup : MonoBehaviour
 {
-    public TextMeshProUGUI titleText;
-    public TextMeshProUGUI bottomText;
+    public Text titleText;
+    public Text bottomText;
 
     void Start()
     {
