@@ -27,9 +27,15 @@ public class Fighter : MonoBehaviour
     protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        // Ensure 2D physics settings are correct and there are no frozen position constraints
         rb.gravityScale = 0f;
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+        // Freeze rotation but allow position movement
         rb.freezeRotation = true;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        // Ensure body type is Dynamic and physics simulated
+        rb.bodyType = RigidbodyType2D.Dynamic;
+        rb.simulated = true;
     }
 
     protected virtual void Start()
@@ -37,17 +43,23 @@ public class Fighter : MonoBehaviour
         currentHealth = maxHealth;
         currentDirection = Random.insideUnitCircle.normalized;
         if (currentDirection == Vector2.zero) currentDirection = Vector2.right;
-        rb.velocity = currentDirection * speed;
+        // initialize movement
+        if (rb != null)
+        {
+            rb.velocity = currentDirection * speed;
+            Debug.Log($"{name} Start() set initial velocity = {rb.velocity}");
+        }
     }
 
     protected virtual void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.CompareTag(wallTag))
+        // Use safe string comparisons for tags so missing tags don't throw
+        if (!string.IsNullOrEmpty(wallTag) && collision.collider != null && collision.collider.tag == wallTag)
         {
             BounceOffWall(collision);
         }
 
-        if (collision.collider.CompareTag(enemyTag))
+        if (!string.IsNullOrEmpty(enemyTag) && collision.collider != null && collision.collider.tag == enemyTag)
         {
             OnEnemyContact(collision);
         }
