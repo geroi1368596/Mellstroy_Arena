@@ -68,7 +68,8 @@ public class PrototypeBuilder
         GameObject title = new GameObject("TitleText");
         title.transform.SetParent(canvasGO.transform, false);
         Text titleText = title.AddComponent<Text>();
-        titleText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        // Use LegacyRuntime.ttf for compatibility with recent Unity versions
+        titleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         titleText.text = "Boxing Guy vs Exploding Guy";
         titleText.alignment = TextAnchor.UpperCenter;
         titleText.fontSize = 36;
@@ -83,7 +84,7 @@ public class PrototypeBuilder
         GameObject bottom = new GameObject("BottomText");
         bottom.transform.SetParent(canvasGO.transform, false);
         Text bottomText = bottom.AddComponent<Text>();
-        bottomText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        bottomText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         bottomText.text = "Like and Subscribe!";
         bottomText.alignment = TextAnchor.LowerCenter;
         bottomText.fontSize = 32;
@@ -171,7 +172,7 @@ public class PrototypeBuilder
         GameObject txtGO = new GameObject("HPText");
         txtGO.transform.SetParent(healthUI.transform, false);
         Text hpText = txtGO.AddComponent<Text>();
-        hpText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        hpText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         hpText.text = "100";
         hpText.alignment = TextAnchor.MiddleCenter;
         RectTransform trect = txtGO.GetComponent<RectTransform>();
