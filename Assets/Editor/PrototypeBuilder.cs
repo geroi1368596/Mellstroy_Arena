@@ -97,22 +97,44 @@ public class PrototypeBuilder
 
         // Background (SpriteRenderer) full-screen
         Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(whiteTexPath);
+        if (sprite == null)
+        {
+            // Try to create a Sprite asset from the PNG if loading as Sprite failed
+            Texture2D tex2 = AssetDatabase.LoadAssetAtPath<Texture2D>(whiteTexPath);
+            if (tex2 != null)
+            {
+                Sprite newSprite = Sprite.Create(tex2, new Rect(0, 0, tex2.width, tex2.height), new Vector2(0.5f, 0.5f), 100f);
+                string spriteAssetPath = "Assets/Generated/whiteSprite.asset";
+                AssetDatabase.CreateAsset(newSprite, spriteAssetPath);
+                AssetDatabase.SaveAssets();
+                sprite = AssetDatabase.LoadAssetAtPath<Sprite>(spriteAssetPath);
+            }
+            else
+            {
+                Debug.LogWarning("Could not load texture at " + whiteTexPath + " — background sprite will be missing.");
+            }
+        }
+
         GameObject bg = new GameObject("Background");
         var sr = bg.AddComponent<SpriteRenderer>();
         sr.sprite = sprite;
         sr.color = new Color(0.27f, 0.78f, 0.92f, 1f);
         bg.transform.position = Vector3.zero;
-        // scale to camera
-        float worldHeight = cam.orthographicSize * 2f;
-        float worldWidth = worldHeight * cam.aspect;
-        Vector2 spriteSize = sr.sprite.bounds.size;
-        bg.transform.localScale = new Vector3(worldWidth / spriteSize.x, worldHeight / spriteSize.y, 1f);
+        // scale to camera — guard against null sprite
+        if (sr.sprite != null)
+        {
+            float worldHeight = cam.orthographicSize * 2f;
+            float worldWidth = worldHeight * cam.aspect;
+            Vector2 spriteSize = sr.sprite.bounds.size;
+            if (spriteSize.x > 0 && spriteSize.y > 0)
+                bg.transform.localScale = new Vector3(worldWidth / spriteSize.x, worldHeight / spriteSize.y, 1f);
+        }
 
         // Create walls
-        CreateWall("Wall_Top", new Vector2(0, cam.orthographicSize - 0.5f), new Vector2(worldWidth, 1f), sprite);
-        CreateWall("Wall_Bottom", new Vector2(0, -cam.orthographicSize + 0.5f), new Vector2(worldWidth, 1f), sprite);
-        CreateWall("Wall_Left", new Vector2(-worldWidth / 2f + 0.5f, 0), new Vector2(1f, worldHeight), sprite);
-        CreateWall("Wall_Right", new Vector2(worldWidth / 2f - 0.5f, 0), new Vector2(1f, worldHeight), sprite);
+        CreateWall("Wall_Top", new Vector2(0, cam.orthographicSize - 0.5f), new Vector2(cam.orthographicSize * 2f * cam.aspect, 1f), sr.sprite);
+        CreateWall("Wall_Bottom", new Vector2(0, -cam.orthographicSize + 0.5f), new Vector2(cam.orthographicSize * 2f * cam.aspect, 1f), sr.sprite);
+        CreateWall("Wall_Left", new Vector2(-cam.orthographicSize * cam.aspect + 0.5f, 0), new Vector2(1f, cam.orthographicSize * 2f), sr.sprite);
+        CreateWall("Wall_Right", new Vector2(cam.orthographicSize * cam.aspect - 0.5f, 0), new Vector2(1f, cam.orthographicSize * 2f), sr.sprite);
 
         // Create Laser prefab
         GameObject laserPrefab = new GameObject("LaserPrefab");
@@ -225,7 +247,10 @@ public class PrototypeBuilder
         sr.sprite = sprite;
         sr.color = Color.black;
         go.transform.position = new Vector3(pos.x, pos.y, 0f);
-        go.transform.localScale = new Vector3(size.x / sprite.bounds.size.x, size.y / sprite.bounds.size.y, 1f);
+        if (sprite != null)
+            go.transform.localScale = new Vector3(size.x / sprite.bounds.size.x, size.y / sprite.bounds.size.y, 1f);
+        else
+            go.transform.localScale = new Vector3(size.x, size.y, 1f);
         var bc = go.AddComponent<BoxCollider2D>();
         bc.size = Vector2.one;
         go.tag = "Wall";
