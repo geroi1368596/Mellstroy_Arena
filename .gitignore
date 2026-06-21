@@ -1,0 +1,46 @@
+# Unity
+
+# =============== #
+# Unity generated #
+# =============== #
+Temp/
+Obj/
+Library/
+Library/**/*
+Logs/
+MemoryCaptures/
+sysinfo.txt
+
+# ============ #
+# User settings #
+# ============ #
+UserSettings/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+
+# Builds
+Build/
+Builds/
+
+# Unity3D generated files
+exportedObj/
+*.unitypackage
+
+# Visual Studio / Rider / VSCode
+.vscode/
+.vs/
+.idea/
+
+# OS generated
+.DS_Store
+Thumbs.db
